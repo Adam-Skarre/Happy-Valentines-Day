@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Parisienne', cursive;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(rgba(255, 182, 193, 0.8), rgba(255, 105, 180, 0.8)),
+                        url('https://images.unsplash.com/photo-1576003606642-1d2dbdce0350?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=3840');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+            animation: fadeInText 3s ease-in-out;
+            z-index: 2;
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+            z-index: 2;
+        }
+
+        .heart-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 150px;
+            color: #ff6b81;
+            animation: pulse 1.5s infinite;
+            transition: transform 0.3s ease-in-out;
+            z-index: 2;
+        }
+
+        .heart-button:hover {
+            transform: scale(1.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .revealed-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 2s ease-in;
+            z-index: 2;
+        }
+
+        .falling-object {
+            position: absolute;
+            top: -100px;
+            animation: fall linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.5rem;
+            font-family: 'Great Vibes', cursive;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="message">Will You Be My Valentine? 🌹</h1>
+        <button class="heart-button" onclick="revealSurprise()">❤️</button>
+        <img id="surprise-image" class="hidden revealed-image" src="https://images.unsplash.com/photo-1501949997128-eca3be3ff5af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920" alt="Romantic Surprise">
+        <audio id="valentine-song" class="hidden">
+            <source src="https://www.dropbox.com/scl/fi/zbvzx7qm932kqw86it3pm/You-re-The-First-The-Last-My-Everything-Edit.mp3?rlkey=iuspjjnouiimpk99x8ci450mb&dl=1" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <footer>Made with ❤️ for Valentine's Day</footer>
+
+    <script>
+        function createFallingObject() {
+            const container = document.body;
+            const object = document.createElement('div');
+            const isHeart = Math.random() > 0.5;
+
+            object.classList.add('falling-object');
+            object.style.left = Math.random() * 100 + 'vw';
+            object.style.animationDuration = Math.random() * 3 + 2 + 's';
+            object.style.fontSize = Math.random() * 20 + 30 + 'px';
+            object.style.color = isHeart ? '#ff6b81' : '#ff3f6c';
+            object.innerHTML = isHeart ? '❤️' : '🌹';
+
+            container.appendChild(object);
+
+            setTimeout(() => {
+                object.remove();
+            }, 5000);
+        }
+
+        setInterval(createFallingObject, 300);
+
+        function revealSurprise() {
+            const heartButton = document.querySelector('.heart-button');
+            const surpriseImage = document.getElementById('surprise-image');
+            const valentineSong = document.getElementById('valentine-song');
+            const message = document.getElementById('message');
+
+            // Hide the heart button
+            heartButton.classList.add('hidden');
+
+            // Show the image, change the message, and play the song
+            surpriseImage.classList.remove('hidden');
+            message.innerHTML = "Happy Valentine's Day, Luciana! 💖";
+            valentineSong.classList.remove('hidden');
+            valentineSong.play().then(() => {
+                console.log("Song is playing successfully!");
+            }).catch(error => {
+                console.error("Playback failed:", error);
+                alert("Please click the heart again to play the music!");
+            });
+        }
+    </script>
+</body>
+</html>
