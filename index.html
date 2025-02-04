@@ -2,101 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine? 💖</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Valentine's Surprise 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Parisienne', cursive;
-            height: 100vh;
-            overflow: hidden;
-            background: linear-gradient(rgba(255, 182, 193, 0.8), rgba(255, 105, 180, 0.8)),
-                        url('https://images.unsplash.com/photo-1576003606642-1d2dbdce0350?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=3840');
-            background-size: cover;
-            background-position: center;
-            color: #fff;
-        }
-
-        .container {
-            text-align: center;
-            position: relative;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        h1 {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-            animation: fadeInText 3s ease-in-out;
-            z-index: 2;
-        }
-
-        p {
-            font-size: 1.5rem;
-            margin-bottom: 3rem;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
-            z-index: 2;
-        }
-
-        .heart-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 150px;
-            color: #ff6b81;
-            animation: pulse 1.5s infinite;
-            transition: transform 0.3s ease-in-out;
-            z-index: 2;
-        }
-
-        .heart-button:hover {
-            transform: scale(1.2);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .revealed-image {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 80%;
-            max-height: 80%;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 2s ease-in;
-            z-index: 2;
-        }
-
-        .falling-object {
-            position: absolute;
-            top: -100px;
-            animation: fall linear infinite;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        footer {
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            text-align: center;
-            font-size: 1.5rem;
-            font-family: 'Great Vibes', cursive;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-        }
+        /* ... (keep all previous styles the same until @keyframes) ... */
 
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -109,77 +20,238 @@
             to { opacity: 1; }
         }
 
-        @keyframes fadeInText {
-            0% { opacity: 0; transform: translateY(-30px); }
-            100% { opacity: 1; transform: translateY(0); }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(10px); }
+            50% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes jump {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        .falling-element {
+            position: absolute;
+            top: -50px;
+            animation: fall linear infinite;
+            z-index: 0;
         }
 
         @keyframes fall {
-            0% {
-                transform: translateY(-100px);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(110vh);
-                opacity: 0;
+            to {
+                transform: translateY(100vh);
             }
         }
+
+        /* ... (keep rest of styles the same) ... */
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 id="message">Will You Be My Valentine? 🌹</h1>
-        <button class="heart-button" onclick="revealSurprise()">❤️</button>
-        <img id="surprise-image" class="hidden revealed-image" src="https://images.unsplash.com/photo-1501949997128-eca3be3ff5af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920" alt="Romantic Surprise">
-        <audio id="valentine-song" class="hidden">
-            <source src="https://www.dropbox.com/scl/fi/zbvzx7qm932kqw86it3pm/You-re-The-First-The-Last-My-Everything-Edit.mp3?rlkey=iuspjjnouiimpk99x8ci450mb&dl=1" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
+    <h1 id="message">Happy Valentine's Day, Luciana! 💖</h1>
+    <p>Click the heart to reveal your surprise!</p>
+    <button class="heart-button" onclick="revealSurprise()">❤️</button>
+    <img id="surprise-image" class="hidden revealed-image" 
+        src="images/surprise-image.jpg" 
+        alt="Romantic Surprise">
+    
+    <div id="valentine-question" class="hidden valentine-question"></div>
+    
+    <div id="gift-selection" class="hidden gift-selection">
+        <h2>Choose Your Favorite Treats 🎁</h2>
+        <div class="gift-options">
+            <div class="gift-option" onclick="selectGift('flowers')">🌹 Romantic Roses</div>
+            <div class="gift-option" onclick="selectGift('chocolate')">🍫 Luxury Chocolates</div>
+            <div class="gift-option" onclick="selectGift('dinner')">🍝 Candlelit Dinner</div>
+        </div>
     </div>
 
-    <footer>Made with ❤️ for Valentine's Day</footer>
+    <div id="final-surprise" class="hidden">
+        <button class="heart-button" onclick="showFinalSurprise()">More Surprises? 💌</button>
+    </div>
+
+    <div class="game-container" id="game-container">
+        <div class="game-box">
+            <h2>Catch Our Love! 💖</h2>
+            <div id="score">Hearts Caught: 0</div>
+            <button onclick="startLoveGame()">Start Game! 🎮</button>
+        </div>
+    </div>
+
+    <div id="signature" class="hidden signature">❤️ Adam Skarre</div>
+    <h3 id="made-with-love">Made with ❤️ for Valentine's Day</h3>
 
     <script>
-        function createFallingObject() {
-            const container = document.body;
-            const object = document.createElement('div');
-            const isHeart = Math.random() > 0.5;
+        let noCount = 0;
+        const funnyMessages = [
+            "Are you sure? 🥺",
+            "Maybe reconsider? 💔",
+            "The heart says yes! 💖",
+            "I'll ask again tomorrow! 📆",
+            "Error 404: 'No' not found ❌"
+        ];
 
-            object.classList.add('falling-object');
-            object.style.left = Math.random() * 100 + 'vw';
-            object.style.animationDuration = Math.random() * 3 + 2 + 's';
-            object.style.fontSize = Math.random() * 20 + 30 + 'px';
-            object.style.color = isHeart ? '#ff6b81' : '#ff3f6c';
-            object.innerHTML = isHeart ? '❤️' : '🌹';
+        let score = 0;
+        let gameInterval;
+        const audio = new Audio("audio/romantic-song.mp3");
+        audio.preload = "auto";
+        audio.muted = false;
 
-            container.appendChild(object);
+        document.addEventListener('touchstart', function() {}, false);
 
-            setTimeout(() => {
-                object.remove();
-            }, 5000);
+        function createFallingElement() {
+            const element = document.createElement('div');
+            element.classList.add('falling-element');
+            element.innerHTML = Math.random() > 0.5 ? '❤️' : '🌸';
+            element.style.left = Math.random() * 100 + 'vw';
+            element.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(element);
+            setTimeout(() => element.remove(), 5000);
         }
 
-        setInterval(createFallingObject, 300);
+        setInterval(createFallingElement, 500);
 
         function revealSurprise() {
-            const heartButton = document.querySelector('.heart-button');
-            const surpriseImage = document.getElementById('surprise-image');
-            const valentineSong = document.getElementById('valentine-song');
-            const message = document.getElementById('message');
+            document.querySelector('.heart-button').classList.add('hidden');
+            document.getElementById('message').classList.add('hidden');
+            document.querySelector('p').classList.add('hidden');
+            document.getElementById('made-with-love').classList.add('hidden');
 
-            // Hide the heart button
-            heartButton.classList.add('hidden');
+            const valentineQuestion = document.getElementById('valentine-question');
+            valentineQuestion.innerHTML = `
+                <p id="question-text">Will you be my Valentine, Luciana?</p>
+                <div id="response-buttons">
+                    <button class="yes-btn" onclick="handleYes()">YES! 💐</button>
+                    <button class="no-btn" onmouseover="dodgeButton()" onclick="handleNo()">No... 😅</button>
+                </div>
+            `;
+            valentineQuestion.classList.remove('hidden');
+            document.getElementById('signature').classList.remove('hidden');
 
-            // Show the image, change the message, and play the song
-            surpriseImage.classList.remove('hidden');
-            message.innerHTML = "Happy Valentine's Day, Luciana! 💖";
-            valentineSong.classList.remove('hidden');
-            valentineSong.play().then(() => {
-                console.log("Song is playing successfully!");
-            }).catch(error => {
-                console.error("Playback failed:", error);
-                alert("Please click the heart again to play the music!");
-            });
+            playAudio();
+
+            setTimeout(() => {
+                const surpriseImage = document.getElementById('surprise-image');
+                surpriseImage.classList.remove('hidden');
+                surpriseImage.style.opacity = 1;
+                
+                if(window.innerWidth < 768) {
+                    surpriseImage.style.marginTop = '30px';
+                }
+            }, 1000);
+        }
+
+        function playAudio() {
+            audio.play()
+                .then(() => console.log("Audio playing"))
+                .catch((error) => {
+                    console.error("Audio error:", error);
+                    document.querySelector('.heart-button').addEventListener('click', () => {
+                        audio.play().catch(e => console.error("Retry failed:", e));
+                    }, { once: true });
+                });
+        }
+
+        function handleYes() {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            document.getElementById("gift-selection").classList.remove("hidden");
+            document.getElementById("valentine-question").classList.add("hidden");
+            document.getElementById('surprise-image').style.maxWidth = "70%";
+        }
+
+        function dodgeButton() {
+            const noBtn = document.querySelector('.no-btn');
+            const maxMove = 50;
+            const newX = Math.random() * maxMove * 2 - maxMove;
+            const newY = Math.random() * maxMove * 2 - maxMove;
+            
+            noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
+            noBtn.style.transition = 'transform 0.3s ease-out';
+            
+            setTimeout(() => {
+                noBtn.style.transform = '';
+                noBtn.style.transition = '';
+            }, 300);
+        }
+
+        function handleNo() {
+            const questionText = document.getElementById("question-text");
+            const noButton = document.querySelector(".no-btn");
+            
+            // Reset button position and animation
+            noButton.style.transform = '';
+            noButton.style.animation = 'jump 0.5s';
+            
+            if(noCount < funnyMessages.length) {
+                questionText.textContent = funnyMessages[noCount];
+                noCount++;
+            } else {
+                questionText.textContent = "Okay, I'll love you anyway! 😘";
+                noButton.style.display = "none";
+            }
+            
+            // Add confetti feedback
+            confetti({ particleCount: 20, spread: 40, origin: { y: 0.6 } });
+            
+            // Reset animation after completion
+            setTimeout(() => {
+                noButton.style.animation = '';
+            }, 500);
+        }
+
+        function selectGift(giftType) {
+            const messages = {
+                flowers: "🌹 A bouquet of red roses is coming your way!",
+                chocolate: "🍫 The finest chocolates will sweeten your day!",
+                dinner: "🍝 Get ready for a romantic candlelit dinner!"
+            };
+            alert(messages[giftType]);
+            document.getElementById('gift-selection').classList.add('hidden');
+            document.getElementById('valentine-question').innerHTML = "Thank you my Valentine! 😍";
+            document.getElementById('final-surprise').classList.remove('hidden');
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+        }
+
+        function showFinalSurprise() {
+            document.getElementById('game-container').style.display = 'flex';
+            confetti({ particleCount: 200, spread: 100 });
+        }
+
+        function startLoveGame() {
+            score = 0;
+            document.getElementById('score').textContent = 'Hearts Caught: 0';
+            document.querySelector('.game-box button').style.display = 'none';
+            gameInterval = setInterval(createGameHeart, 1000);
+        }
+
+        function createGameHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('falling-heart');
+            heart.innerHTML = '💖';
+            heart.style.left = Math.random() * 95 + '%';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            
+            heart.onclick = () => {
+                score++;
+                document.getElementById('score').textContent = `Hearts Caught: ${score}`;
+                heart.remove();
+                if(score >= 10) {
+                    clearInterval(gameInterval);
+                    document.getElementById('game-container').innerHTML = `
+                        <div class="game-box">
+                            <h2>You've Caught My Heart Forever! 💘</h2>
+                            <p>Happy Valentine's Day, Luciana! 🌹</p>
+                            <button onclick="location.reload()">Play Again?</button>
+                        </div>
+                    `;
+                }
+            };
+
+            document.getElementById('game-container').appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
         }
     </script>
 </body>
